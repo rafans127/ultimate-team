@@ -18,7 +18,7 @@ export default function PlayerCard({ player, compact = false }: Props) {
       ref={setNodeRef}
       style={{
         transform: CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.3 : 1,
+        opacity: isDragging ? 0 : 1,
         cursor: 'grab',
         touchAction: 'none',
       }}

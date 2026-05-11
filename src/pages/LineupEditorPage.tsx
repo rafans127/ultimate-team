@@ -12,6 +12,18 @@ import {
   type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core'
+import type { Modifier } from '@dnd-kit/core'
+
+const snapToCursor: Modifier = ({ transform, activatorEvent, activeNodeRect }) => {
+  if (!activatorEvent || !activeNodeRect) return transform
+  const e = activatorEvent as MouseEvent | TouchEvent
+  const point = 'touches' in e ? e.touches[0] : e
+  return {
+    ...transform,
+    x: transform.x + point.clientX - activeNodeRect.left - activeNodeRect.width / 2,
+    y: transform.y + point.clientY - activeNodeRect.top - activeNodeRect.height / 2,
+  }
+}
 import { getLineup, updateLineup, type Lineup } from '../lib/db'
 import type { Player } from '../types'
 import type { FormationKey } from '../data/formations'
@@ -215,9 +227,9 @@ export default function LineupEditorPage() {
         </div>
       </div>
 
-      <DragOverlay dropAnimation={null}>
+      <DragOverlay dropAnimation={null} modifiers={[snapToCursor]}>
         {activePlayer && (
-          <div style={{ cursor: 'grabbing' }}>
+          <div style={{ cursor: 'grabbing', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <PlayerChip player={activePlayer} compact />
           </div>
         )}
